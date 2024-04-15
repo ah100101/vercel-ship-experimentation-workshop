@@ -8,8 +8,8 @@ import { products } from "@/lib/products";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
-      <div className="flex-col items-center justify-between max-w-5xl">
+    <main className="min-h-screen max-w-5xl py-6 mx-auto">
+      <div className="flex flex-col">
         <section className="flex w-full justify-center py-4 md:py-8 lg:py-12">
           <ProductHero product={products[0]} />
         </section>
