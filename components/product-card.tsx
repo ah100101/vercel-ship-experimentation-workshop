@@ -1,13 +1,12 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
 
-export default function ProductCard(props: {
-  imageSrc: string;
-  imageAlt: string;
-  title: string;
-  price: string;
+export default function ProductCard({
+  product,
+}: {
+  product: { imageSrc: string; imageAlt: string; title: string; price: string };
 }) {
-  const { imageSrc, imageAlt, title, price } = props;
+  const { imageSrc, imageAlt, title, price } = product;
   return (
     <div className="flex flex-col items-center gap-0 border border-gray-200 rounded-lg shadow-lg">
       <Image

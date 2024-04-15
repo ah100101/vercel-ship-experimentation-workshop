@@ -1,13 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ProductHero(props: {
-  imageSrc: string;
-  imageAlt: string;
-  title: string;
-  description: string;
+export default function ProductHero({
+  product,
+}: {
+  product: {
+    imageSrc: string;
+    imageAlt: string;
+    title: string;
+    description: string;
+  };
 }) {
-  const { imageSrc, imageAlt, title, description } = props;
+  const { imageSrc, imageAlt, title, description } = product;
   return (
     <div className="container px-4 md:px-6">
       <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6 text-center md:text-left">

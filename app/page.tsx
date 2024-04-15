@@ -4,39 +4,23 @@
  */
 import ProductCard from "@/components/product-card";
 import ProductHero from "@/components/product-hero";
+import { products } from "@/lib/products";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
       <div className="flex-col items-center justify-between max-w-5xl">
         <section className="flex w-full justify-center py-4 md:py-8 lg:py-12">
-          <ProductHero
-            title="Featured Product"
-            description="Example product description goes here"
-            imageSrc="/product-images/hoodie-1.png"
-            imageAlt="Featured product"
-          />
+          <ProductHero product={products[0]} />
         </section>
-        <section className="flex w-full justify-center py-12 md:py-24 lg:py-32  333">
-          <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 md:px-6">
-            <ProductCard
-              imageSrc="/product-images/mug-1.png"
-              imageAlt="Product 1"
-              price="$99.99"
-              title="Product 1"
-            />
-            <ProductCard
-              imageSrc="/product-images/hat-1.png"
-              imageAlt="Product 2"
-              price="$99.99"
-              title="Product 2"
-            />
-            <ProductCard
-              imageSrc="/product-images/cup-black.png"
-              imageAlt="Product 3"
-              price="$99.99"
-              title="Product 3"
-            />
+        <section className="flex flex-col w-full justify-center py-12 space-y-4 md:py-24 lg:py-32 px-4 md:px-6">
+          <h2 className="text-xl font-bold tracking-tighter sm:text-2xl md:text-3xl">
+            Popular Products
+          </h2>
+          <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <ProductCard product={products[1]} />
+            <ProductCard product={products[2]} />
+            <ProductCard product={products[3]} />
           </div>
         </section>
       </div>
