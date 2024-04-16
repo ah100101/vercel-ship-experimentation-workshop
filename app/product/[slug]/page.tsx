@@ -10,8 +10,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { products } from "@/lib/products";
+import { encrypt, FlagValuesType } from "@vercel/flags";
+import { FlagValues } from "@vercel/flags/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
+async function ConfidentialFlagValues({ values }: { values: FlagValuesType }) {
+  const encryptedFlagValues = await encrypt(values);
+  return <FlagValues values={encryptedFlagValues} />;
+}
 
 export default function ProductDetailPage({
   params,
@@ -137,6 +145,9 @@ export default function ProductDetailPage({
         </div>
       </section>
       <RelatedProducts slug={product.slug} />
+      <Suspense fallback={null}>
+        <ConfidentialFlagValues values={{ showBuyNowButton: false }} />
+      </Suspense>
     </main>
   );
 }
