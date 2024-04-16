@@ -3,6 +3,7 @@ import { Cabin, Rethink_Sans } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+import { VercelToolbar } from "@vercel/toolbar/next";
 
 const cabin = Cabin({
   subsets: ["latin"],
@@ -26,6 +27,12 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        {/*
+          ⚠️ This shows the toolbar to all visitors
+          See detailed instructions to limit who can see the toolbar for real applications:
+          https://vercel.com/docs/workflow-collaboration/vercel-toolbar/in-production-and-localhost/add-to-production
+        */}
+        <VercelToolbar />
       </body>
     </html>
   );
