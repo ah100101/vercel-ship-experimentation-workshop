@@ -21,6 +21,7 @@ import { cookies } from "next/headers";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import optimizely from "@optimizely/optimizely-sdk";
 
 async function ConfidentialFlagValues({ values }: { values: FlagValuesType }) {
   const encryptedFlagValues = await encrypt(values);
@@ -33,8 +34,17 @@ async function getFlags() {
     ? await decrypt<FlagOverridesType>(overrideCookie)
     : {};
 
+  const client = optimizely.createInstance({
+    sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
+  });
+
+  await client!.onReady();
+  const context = client?.createUserContext("demo-user-123")!;
+
   const flags = {
-    showBuyNowButton: overrides?.showBuyNowButton ?? false,
+    showBuyNowButton:
+      overrides?.showBuyNowButton ??
+      context.decide("showBuyNowButton").variationKey,
   };
 
   return flags;
@@ -160,7 +170,7 @@ export default async function ProductDetailPage({
             </div>
             <div className="flex flex-row w-full space-x-2">
               <Button className="w-full">Add to Cart</Button>
-              {flags.showBuyNowButton && (
+              {flags.showBuyNowButton === "on" && (
                 <Button className="w-full" variant="outline">
                   Buy Now
                 </Button>
