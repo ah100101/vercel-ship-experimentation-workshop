@@ -127,7 +127,12 @@ export default function ProductDetailPage({
                 </SelectContent>
               </Select>
             </div>
-            <Button>Add to Cart</Button>
+            <div className="flex flex-row w-full space-x-2">
+              <Button className="w-full">Add to Cart</Button>
+              <Button className="w-full" variant="outline">
+                Buy Now
+              </Button>
+            </div>
           </form>
         </div>
       </section>
