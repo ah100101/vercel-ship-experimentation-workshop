@@ -10,8 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { products } from "@/lib/products";
-import { encrypt, FlagValuesType } from "@vercel/flags";
+import {
+  decrypt,
+  encrypt,
+  FlagOverridesType,
+  FlagValuesType,
+} from "@vercel/flags";
 import { FlagValues } from "@vercel/flags/react";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -21,7 +27,20 @@ async function ConfidentialFlagValues({ values }: { values: FlagValuesType }) {
   return <FlagValues values={encryptedFlagValues} />;
 }
 
-export default function ProductDetailPage({
+async function getFlags() {
+  const overrideCookie = cookies().get("vercel-flag-overrides")?.value;
+  const overrides = overrideCookie
+    ? await decrypt<FlagOverridesType>(overrideCookie)
+    : {};
+
+  const flags = {
+    showBuyNowButton: overrides?.showBuyNowButton ?? false,
+  };
+
+  return flags;
+}
+
+export default async function ProductDetailPage({
   params,
 }: {
   params: { slug: string };
@@ -30,8 +49,12 @@ export default function ProductDetailPage({
   if (!product) {
     notFound();
   }
+  const flags = await getFlags();
   return (
     <main className="max-w-5xl mx-auto py-6">
+      <Suspense fallback={null}>
+        <ConfidentialFlagValues values={flags} />
+      </Suspense>
       <section className="grid md:grid-cols-2 gap-6 lg:gap-12 items-start py-4 md:py-8 lg:py-12">
         <div className="grid md:grid-cols-5 gap-3">
           <div className="md:col-span-4">
@@ -137,17 +160,16 @@ export default function ProductDetailPage({
             </div>
             <div className="flex flex-row w-full space-x-2">
               <Button className="w-full">Add to Cart</Button>
-              <Button className="w-full" variant="outline">
-                Buy Now
-              </Button>
+              {flags.showBuyNowButton && (
+                <Button className="w-full" variant="outline">
+                  Buy Now
+                </Button>
+              )}
             </div>
           </form>
         </div>
       </section>
       <RelatedProducts slug={product.slug} />
-      <Suspense fallback={null}>
-        <ConfidentialFlagValues values={{ showBuyNowButton: false }} />
-      </Suspense>
     </main>
   );
 }
