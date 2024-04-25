@@ -21,6 +21,13 @@ export async function GET(request: NextRequest) {
           { value: "on", label: "On" },
         ],
       },
+      buynow_text: {
+        description: "Text to display on the Buy Now button",
+        options: [
+          { value: "Buy Now", label: "Buy Now" },
+          { value: "Purchase Now", label: "Purchase Now" },
+        ],
+      },
     },
     overrideEncryptionMode: "encrypted" as const,
   };

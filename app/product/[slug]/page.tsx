@@ -130,7 +130,7 @@ async function Purchase() {
       <Button className="w-full">Add to Cart</Button>
       {flags.buynow === "on" && (
         <Button className="w-full" variant="outline">
-          Buy Now
+          {flags.buynow_text ? (flags.buynow_text as string) : "Buy Now"}
         </Button>
       )}
     </div>
@@ -149,9 +149,12 @@ async function getFlags() {
 
   await client!.onReady();
   const context = client?.createUserContext("demo-user-12345")!;
+  const decision = context.decide("buynow");
 
   const flags = {
-    buynow: overrides?.buynow ?? context.decide("buynow").variationKey,
+    buynow: overrides?.buynow ?? decision.variationKey,
+    buynow_text:
+      overrides?.buynow_text ?? (decision.variables.buynow_text as string),
   };
 
   return flags;
