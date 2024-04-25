@@ -1,13 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { products } from "@/lib/products";
 import { decrypt, FlagOverridesType } from "@vercel/flags";
 import { cookies } from "next/headers";
@@ -29,7 +22,7 @@ export default async function ProductDetailPage({
   }
 
   return (
-    <main className="max-w-5xl mx-auto py-6">
+    <main className="max-w-5xl mx-auto py-6 px-4 md:px-6">
       <section className="grid md:grid-cols-2 gap-6 lg:gap-12 items-start py-4 md:py-8 lg:py-12">
         <div className="grid md:grid-cols-5 gap-3">
           <div className="md:col-span-4">
@@ -43,7 +36,7 @@ export default async function ProductDetailPage({
           </div>
         </div>
         <div className="grid gap-4 md:gap-10">
-          <div className="hidden md:flex items-start">
+          <div className="md:flex items-start">
             <div className="grid gap-4">
               <h1 className="font-bold text-3xl lg:text-4xl">
                 {product.title}
@@ -116,23 +109,6 @@ export default async function ProductDetailPage({
                 </Label>
               </RadioGroup>
             </div>
-            <div className="grid gap-2">
-              <Label className="text-base" htmlFor="quantity">
-                Quantity
-              </Label>
-              <Select defaultValue="1">
-                <SelectTrigger className="w-24">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                  <SelectItem value="3">3</SelectItem>
-                  <SelectItem value="4">4</SelectItem>
-                  <SelectItem value="5">5</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
             <div className="min-h-10">
               <Suspense fallback={null}>
                 <Purchase />
@@ -149,7 +125,7 @@ export default async function ProductDetailPage({
 async function Purchase() {
   const flags = await getFlags();
   return (
-    <div className="flex flex-row w-full space-x-2">
+    <div className="flex flex-row w-full space-x-2 -mx-2">
       <ConfidentialFlagValues values={flags} />
       <Button className="w-full">Add to Cart</Button>
       {flags.buynow === "on" && (

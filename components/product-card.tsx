@@ -18,7 +18,7 @@ export default function ProductCard({
     <div className="flex flex-col items-center gap-0 border border-gray-200 rounded-lg shadow-lg">
       <Image
         alt={imageAlt}
-        className="object-cover rounded-t-lg bg-slate-300"
+        className="object-cover rounded-t-lg bg-slate-300 w-full"
         height="350"
         width="350"
         src={imageSrc}

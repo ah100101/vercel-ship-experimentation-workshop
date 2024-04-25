@@ -10,14 +10,14 @@ export default function Home() {
   return (
     <main className="min-h-screen max-w-5xl py-6 mx-auto">
       <div className="flex flex-col">
-        <section className="flex w-full justify-center py-4 md:py-8 lg:py-12">
+        <section className="flex w-full py-4 md:py-8 lg:py-12 justify-center">
           <ProductHero product={products[0]} />
         </section>
         <section className="flex flex-col w-full justify-center py-12 space-y-4 md:py-24 lg:py-32 px-4 md:px-6">
           <h2 className="text-xl font-bold tracking-tighter sm:text-2xl md:text-3xl">
             Popular Products
           </h2>
-          <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="container grid grid-cols-1 mx-auto md:grid-cols-2 lg:grid-cols-3 gap-6">
             <ProductCard product={products[1]} />
             <ProductCard product={products[2]} />
             <ProductCard product={products[3]} />
