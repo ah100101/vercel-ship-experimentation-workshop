@@ -1,4 +1,3 @@
-import ProductCard from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -10,45 +9,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { products } from "@/lib/products";
-import {
-  decrypt,
-  encrypt,
-  FlagOverridesType,
-  FlagValuesType,
-} from "@vercel/flags";
-import { FlagValues } from "@vercel/flags/react";
+import { decrypt, FlagOverridesType } from "@vercel/flags";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import optimizely from "@optimizely/optimizely-sdk";
-
-async function ConfidentialFlagValues({ values }: { values: FlagValuesType }) {
-  const encryptedFlagValues = await encrypt(values);
-  return <FlagValues values={encryptedFlagValues} />;
-}
-
-async function getFlags() {
-  const overrideCookie = cookies().get("vercel-flag-overrides")?.value;
-  const overrides = overrideCookie
-    ? await decrypt<FlagOverridesType>(overrideCookie)
-    : {};
-
-  const client = optimizely.createInstance({
-    sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
-  });
-
-  await client!.onReady();
-  const context = client?.createUserContext("demo-user-123")!;
-
-  const flags = {
-    showBuyNowButton:
-      overrides?.showBuyNowButton ??
-      context.decide("showBuyNowButton").variationKey,
-  };
-
-  return flags;
-}
+import RelatedProducts from "@/components/related-products";
+import ConfidentialFlagValues from "@/components/confidential-flag-values";
 
 export default async function ProductDetailPage({
   params,
@@ -59,12 +27,9 @@ export default async function ProductDetailPage({
   if (!product) {
     notFound();
   }
-  const flags = await getFlags();
+
   return (
     <main className="max-w-5xl mx-auto py-6">
-      <Suspense fallback={null}>
-        <ConfidentialFlagValues values={flags} />
-      </Suspense>
       <section className="grid md:grid-cols-2 gap-6 lg:gap-12 items-start py-4 md:py-8 lg:py-12">
         <div className="grid md:grid-cols-5 gap-3">
           <div className="md:col-span-4">
@@ -168,13 +133,10 @@ export default async function ProductDetailPage({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-row w-full space-x-2">
-              <Button className="w-full">Add to Cart</Button>
-              {flags.showBuyNowButton === "on" && (
-                <Button className="w-full" variant="outline">
-                  Buy Now
-                </Button>
-              )}
+            <div className="min-h-10">
+              <Suspense fallback={null}>
+                <Purchase />
+              </Suspense>
             </div>
           </form>
         </div>
@@ -184,21 +146,37 @@ export default async function ProductDetailPage({
   );
 }
 
-function RelatedProducts({ slug }: { slug: string }) {
-  const relatedProducts = products.filter((p) => p.slug !== slug).slice(0, 3);
-  if (!relatedProducts.length) {
-    return null;
-  }
+async function Purchase() {
+  const flags = await getFlags();
   return (
-    <section className="flex flex-col w-full justify-center py-6 space-y-4 md:py-8 lg:py-12 px-4 md:px-6">
-      <h2 className="text-xl font-bold tracking-tighter sm:text-2xl md:text-3xl">
-        Related Products
-      </h2>
-      <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {relatedProducts.map((product) => {
-          return <ProductCard key={product.slug} product={product} />;
-        })}
-      </div>
-    </section>
+    <div className="flex flex-row w-full space-x-2">
+      <ConfidentialFlagValues values={flags} />
+      <Button className="w-full">Add to Cart</Button>
+      {flags.buynow === "on" && (
+        <Button className="w-full" variant="outline">
+          Buy Now
+        </Button>
+      )}
+    </div>
   );
+}
+
+async function getFlags() {
+  const overrideCookieValue = cookies().get("vercel-flag-overrides")?.value;
+  const overrides = overrideCookieValue
+    ? await decrypt<FlagOverridesType>(overrideCookieValue)
+    : null;
+
+  const client = optimizely.createInstance({
+    sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
+  });
+
+  await client!.onReady();
+  const context = client?.createUserContext("demo-user-12345")!;
+
+  const flags = {
+    buynow: overrides?.buynow ?? context.decide("buynow").variationKey,
+  };
+
+  return flags;
 }
