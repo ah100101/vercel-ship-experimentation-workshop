@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { VercelToolbar } from "@vercel/toolbar/next";
+import { Toaster } from "@/components/ui/sonner";
 
 const cabin = Cabin({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
           https://vercel.com/docs/workflow-collaboration/vercel-toolbar/in-production-and-localhost/add-to-production
         */}
         <VercelToolbar />
+        <Toaster richColors />
       </body>
     </html>
   );

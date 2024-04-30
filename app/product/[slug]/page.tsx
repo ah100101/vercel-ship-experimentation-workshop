@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { products } from "@/lib/products";
@@ -10,6 +9,8 @@ import { Suspense } from "react";
 import optimizely from "@optimizely/optimizely-sdk";
 import RelatedProducts from "@/components/related-products";
 import ConfidentialFlagValues from "@/components/confidential-flag-values";
+import AddToCartButton from "@/components/add-to-cart";
+import BuyNowButton from "@/components/buy-now";
 
 export default async function ProductDetailPage({
   params,
@@ -127,12 +128,8 @@ async function Purchase() {
   return (
     <div className="flex flex-row w-full space-x-2 -mx-2">
       <ConfidentialFlagValues values={flags} />
-      <Button className="w-full">Add to Cart</Button>
-      {flags.buynow === "on" && (
-        <Button className="w-full" variant="outline">
-          Buy Now
-        </Button>
-      )}
+      <AddToCartButton />
+      {flags.buynow === "on" && <BuyNowButton />}
     </div>
   );
 }
