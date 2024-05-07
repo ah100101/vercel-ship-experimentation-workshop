@@ -2,13 +2,14 @@
 
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import { trackAddToCart } from "@/lib/actions";
 
 export default function AddToCartButton() {
   return (
     <Button
       className="w-full"
       onClick={(e) => {
-        e.preventDefault();
+        trackAddToCart();
         toast.info("Product added to cart!");
       }}
     >
