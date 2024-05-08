@@ -124,22 +124,32 @@ export default async function ProductDetailPage({
 }
 
 async function Purchase() {
-  const overrides = await getOverrides();
-
   const client = optimizely.createInstance({
     sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
   });
 
-  await client!.onReady();
+  if (!client) {
+    throw new Error("Failed to create client");
+  }
 
-  const context = client?.createUserContext("demo-user-1")!;
+  await client.onReady();
+
+  const cookieStore = cookies();
+  const shopperId = cookieStore.get("shopper")?.value;
+  const context = client.createUserContext(shopperId);
+
+  if (!context) {
+    throw new Error("Failed to create user context");
+  }
+
   const decision = context.decide("buynow");
+  const overrides = await getOverrides();
 
   const flags = {
-    buynow: overrides?.buynow ?? decision.variationKey,
+    buynow: overrides?.buynow ?? decision.enabled,
   };
 
-  const buttonText = decision.variables.buynow_text as string;
+  const buttonText = decision?.variables.buynow_text as string;
 
   return (
     <div className="flex flex-row w-full space-x-2 -mx-2">
