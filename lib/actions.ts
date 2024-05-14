@@ -1,16 +1,50 @@
 "use server";
 
 import optimizely from "@optimizely/optimizely-sdk";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export async function trackAddToCart() {
+export async function addToCart(productId: string) {
   const client = optimizely.createInstance({
     sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
   });
 
-  await client!.onReady();
+  if (!client) {
+    throw new Error("Failed to create client");
+  }
 
-  const context = client?.createUserContext("demo-user-1")!;
+  await client.onReady();
+
+  const cookieStore = cookies();
+  const shopperId = cookieStore.get("shopper")?.value;
+  const context = client?.createUserContext(shopperId);
+
+  if (!context) {
+    throw new Error("Failed to create user context");
+  }
+
+  let cartItems: string[] = [];
+
+  if (cookieStore.has("cart")) {
+    cartItems = JSON.parse(cookieStore.get("cart")?.value!) as string[];
+  }
+
+  cookieStore.set(
+    "cart",
+    JSON.stringify([...cartItems.filter((i) => i !== productId), productId])
+  );
+
   context.trackEvent("add_to_cart");
+}
+
+export async function removeFromCart(productId: string) {
+  const cookieStore = cookies();
+  const cartItems = JSON.parse(cookieStore.get("cart")?.value!) as string[];
+  cookieStore.set(
+    "cart",
+    JSON.stringify(cartItems.filter((i) => i !== productId))
+  );
+  redirect("/cart");
 }
 
 export async function trackProductPurchase() {
@@ -18,8 +52,43 @@ export async function trackProductPurchase() {
     sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
   });
 
-  await client!.onReady();
+  if (!client) {
+    throw new Error("Failed to create client");
+  }
 
-  const context = client?.createUserContext("demo-user-1")!;
+  await client.onReady();
+
+  const cookieStore = cookies();
+  const shopperId = cookieStore.get("shopper")?.value;
+  const context = client?.createUserContext(shopperId);
+
+  if (!context) {
+    throw new Error("Failed to create user context");
+  }
+
   context.trackEvent("product_purchase");
+}
+
+export async function placeOrder() {
+  const client = optimizely.createInstance({
+    sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
+  });
+
+  if (!client) {
+    throw new Error("Failed to create client");
+  }
+
+  await client.onReady();
+
+  const cookieStore = cookies();
+  const shopperId = cookieStore.get("shopper")?.value;
+  const context = client?.createUserContext(shopperId);
+
+  if (!context) {
+    throw new Error("Failed to create user context");
+  }
+
+  cookieStore.set("cart", JSON.stringify([]));
+  context.trackEvent("product_purchase");
+  redirect("/success");
 }

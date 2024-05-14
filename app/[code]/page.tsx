@@ -5,11 +5,19 @@
 import ProductCard from "@/components/product-card";
 import ProductHero from "@/components/product-hero";
 import { products } from "@/lib/products";
+import { showPromoBannerFlag } from "@/lib/middleware-flags";
 
-export default function Home() {
+export default async function Home({ params }: { params: { code: string } }) {
+  const showPromoBanner = await showPromoBannerFlag(params.code);
+
   return (
     <main className="min-h-screen max-w-5xl py-6 mx-auto">
       <div className="flex flex-col">
+        {showPromoBanner && (
+          <section className="flex w-full py-4 bg-amber-300 justify-center rounded-lg mx-4 md:mx-6 font-bold">
+            Acme Sale Week is here! Get 20% off all products.
+          </section>
+        )}
         <section className="flex w-full py-4 md:py-8 lg:py-12 justify-center">
           <ProductHero product={products[0]} />
         </section>

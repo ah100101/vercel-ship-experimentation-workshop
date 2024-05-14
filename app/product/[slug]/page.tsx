@@ -1,16 +1,19 @@
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { products } from "@/lib/products";
-import { decrypt, FlagOverridesType } from "@vercel/flags";
-import { cookies } from "next/headers";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import optimizely from "@optimizely/optimizely-sdk";
 import RelatedProducts from "@/components/related-products";
 import ConfidentialFlagValues from "@/components/confidential-flag-values";
 import AddToCartButton from "@/components/add-to-cart";
 import BuyNowButton from "@/components/buy-now";
+import { showBuyNowFlag } from "@/lib/server-flags";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatUSD } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
 
 export default async function ProductDetailPage({
   params,
@@ -45,7 +48,9 @@ export default async function ProductDetailPage({
               <div>
                 <p>{product.details}</p>
               </div>
-              <div className="text-4xl font-bold ml-auto">{product.price}</div>
+              <div className="text-4xl font-bold ml-auto">
+                {formatUSD(product.price)}
+              </div>
             </div>
           </div>
           <div className="grid gap-4 md:gap-10">
@@ -110,10 +115,18 @@ export default async function ProductDetailPage({
                 </Label>
               </RadioGroup>
             </div>
-            <div className="min-h-10">
-              <Suspense fallback={null}>
-                <Purchase />
+            <div className="space-y-2">
+              <Suspense fallback={<Skeleton className="w-full h-[32px]" />}>
+                <Purchase productId={product.id} />
               </Suspense>
+              <Link
+                href="/cart"
+                prefetch={true}
+                className={`w-full ${buttonVariants({ variant: "outline" })}`}
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                View Cart
+              </Link>
             </div>
           </div>
         </div>
@@ -123,36 +136,14 @@ export default async function ProductDetailPage({
   );
 }
 
-async function Purchase() {
-  const overrides = await getOverrides();
-
-  const client = optimizely.createInstance({
-    sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
-  });
-
-  await client!.onReady();
-
-  const context = client?.createUserContext("demo-user-1")!;
-  const decision = context.decide("buynow");
-
-  const flags = {
-    buynow: overrides?.buynow ?? decision.variationKey,
-  };
-
-  const buttonText = decision.variables.buynow_text as string;
-
+async function Purchase({ productId }: { productId: string }) {
+  const showBuyNow = await showBuyNowFlag();
+  const buttonText = showBuyNow?.buttonText || "Buy Now";
   return (
-    <div className="flex flex-row w-full space-x-2 -mx-2">
-      <ConfidentialFlagValues values={flags} />
-      <AddToCartButton />
-      {flags.buynow === "on" && <BuyNowButton text={buttonText} />}
+    <div className="flex flex-row w-full gap-1">
+      <ConfidentialFlagValues values={{ [showBuyNowFlag.key]: showBuyNow }} />
+      <AddToCartButton productId={productId} />
+      {showBuyNow.enabled && <BuyNowButton text={buttonText} />}
     </div>
   );
-}
-
-async function getOverrides() {
-  const overrideCookieValue = cookies().get("vercel-flag-overrides")?.value;
-  return overrideCookieValue
-    ? await decrypt<FlagOverridesType>(overrideCookieValue)
-    : null;
 }

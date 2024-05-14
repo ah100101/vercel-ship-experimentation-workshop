@@ -2,14 +2,14 @@
 
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import { trackAddToCart } from "@/lib/actions";
+import { addToCart } from "@/lib/actions";
 
-export default function AddToCartButton() {
+export default function AddToCartButton({ productId }: { productId: string }) {
   return (
     <Button
       className="w-full"
       onClick={(e) => {
-        trackAddToCart();
+        addToCart(productId);
         toast.info("Product added to cart!");
       }}
     >
