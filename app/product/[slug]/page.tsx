@@ -5,7 +5,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import RelatedProducts from "@/components/related-products";
-import ConfidentialFlagValues from "@/components/confidential-flag-values";
 import AddToCartButton from "@/components/add-to-cart";
 import BuyNowButton from "@/components/buy-now";
 import { showBuyNowFlag } from "@/lib/server-flags";
@@ -14,6 +13,7 @@ import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import ButtonSkeleton from "@/components/ui/button-skeleton";
+import { FlagValues } from "@vercel/flags/react";
 
 export default async function ProductDetailPage({
   params,
@@ -141,7 +141,7 @@ async function Purchase({ productId }: { productId: string }) {
   const buttonText = showBuyNow?.buttonText || "Buy Now";
   return (
     <div className="flex flex-row w-full gap-1">
-      <ConfidentialFlagValues values={{ [showBuyNowFlag.key]: showBuyNow }} />
+      <FlagValues values={{ [showBuyNowFlag.key]: showBuyNow }} />
       <AddToCartButton productId={productId} />
       {showBuyNow.enabled && <BuyNowButton text={buttonText} />}
     </div>
