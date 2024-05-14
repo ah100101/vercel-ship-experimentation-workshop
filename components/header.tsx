@@ -1,5 +1,5 @@
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { Package2Icon, TriangleIcon } from "lucide-react";
+import { Package2Icon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/button";
