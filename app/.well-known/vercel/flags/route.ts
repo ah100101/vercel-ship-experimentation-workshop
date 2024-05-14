@@ -1,28 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
-import { verifyAccess, type ApiData } from "@vercel/flags";
+import { ApiData, verifyAccess } from "@vercel/flags";
+import * as middlewareDefinitions from "../../../../lib/middleware-flags";
+import * as serverDefinitions from "../../../../lib/server-flags";
+import { unstable_getMiddlewareFlagsProviderData } from "@vercel/flags/next/middleware";
+import { NextResponse, type NextRequest } from "next/server";
+import { unstable_getServerFlagsProviderData } from "@vercel/flags/next/server";
+
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const access = await verifyAccess(request.headers.get("Authorization"));
   if (!access) return NextResponse.json(null, { status: 401 });
 
-  if (!process.env.OPTIMIZELY_PROJECT_ID || !process.env.OPTIMIZELY_API_KEY) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+  const middlewareFlags = unstable_getMiddlewareFlagsProviderData(
+    middlewareDefinitions
+  );
+  const serverFlags = unstable_getServerFlagsProviderData(serverDefinitions);
 
-  const apiData = {
+  return NextResponse.json<ApiData>({
     definitions: {
-      buynow: {
-        description: "Controls the visibility of the Buy Now button",
-        options: [
-          { value: "off", label: "Off" },
-          { value: "on", label: "On" },
-        ],
-      },
+      ...middlewareFlags.definitions,
+      ...serverFlags.definitions,
     },
-    overrideEncryptionMode: "encrypted" as const,
-  };
-  return NextResponse.json<ApiData>(apiData);
+    hints: [...middlewareFlags.hints, ...serverFlags.hints],
+  });
 }
