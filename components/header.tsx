@@ -20,7 +20,7 @@ export default function Header() {
           <Link
             target="_blank"
             className="space-x-2"
-            href="https://github.com/vercel"
+            href="https://github.com/ah100101/vercel-ship-experimentation-workshop"
           >
             <GitHubLogoIcon className="h-5 w-5" />
             <span>GitHub</span>
@@ -28,7 +28,8 @@ export default function Header() {
         </Button>
         <Button asChild className="pl-1">
           <Link
-            href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fhello-world"
+            target="_blank"
+            href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fah100101%2Fvercel-ship-experimentation-workshop&env=OPTIMIZELY_API_KEY,OPTIMIZELY_SDK_KEY,OPTIMIZELY_PROJECT_ID,FLAGS_SECRET&project-name=vercel-ship-experimentation-workshop&repository-name=vercel-ship-experimentation-workshop"
             className="flex flex-row justify-center items-center"
           >
             <Image
