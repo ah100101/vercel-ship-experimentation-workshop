@@ -9,11 +9,11 @@ import ConfidentialFlagValues from "@/components/confidential-flag-values";
 import AddToCartButton from "@/components/add-to-cart";
 import BuyNowButton from "@/components/buy-now";
 import { showBuyNowFlag } from "@/lib/server-flags";
-import { Skeleton } from "@/components/ui/skeleton";
 import { formatUSD } from "@/lib/utils";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
+import ButtonSkeleton from "@/components/ui/button-skeleton";
 
 export default async function ProductDetailPage({
   params,
@@ -116,7 +116,7 @@ export default async function ProductDetailPage({
               </RadioGroup>
             </div>
             <div className="space-y-2">
-              <Suspense fallback={<Skeleton className="w-full h-[32px]" />}>
+              <Suspense fallback={<ButtonSkeleton />}>
                 <Purchase productId={product.id} />
               </Suspense>
               <Link
