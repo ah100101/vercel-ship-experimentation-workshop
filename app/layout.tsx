@@ -27,7 +27,6 @@ export default function RootLayout({
       <body className={`${cabin.variable} max-w-7xl mx-auto`}>
         <Header />
         {children}
-        <Footer />
         {/*
           ⚠️ This shows the toolbar to all visitors
           See detailed instructions to limit who can see the toolbar for real applications:
