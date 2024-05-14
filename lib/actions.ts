@@ -66,29 +66,13 @@ export async function trackProductPurchase() {
     throw new Error("Failed to create user context");
   }
 
+  console.log("Tracking product purchase");
   context.trackEvent("product_purchase");
 }
 
 export async function placeOrder() {
-  const client = optimizely.createInstance({
-    sdkKey: process.env.OPTIMIZELY_SDK_KEY!,
-  });
-
-  if (!client) {
-    throw new Error("Failed to create client");
-  }
-
-  await client.onReady();
-
   const cookieStore = cookies();
-  const shopperId = cookieStore.get("shopper")?.value;
-  const context = client?.createUserContext(shopperId);
-
-  if (!context) {
-    throw new Error("Failed to create user context");
-  }
-
   cookieStore.set("cart", JSON.stringify([]));
-  context.trackEvent("product_purchase");
+  await trackProductPurchase();
   redirect("/success");
 }
