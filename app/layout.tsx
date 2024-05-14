@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Cabin } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { VercelToolbar } from "@vercel/toolbar/next";
 import { Toaster } from "@/components/ui/sonner";
