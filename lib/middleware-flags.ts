@@ -1,13 +1,8 @@
 import { unstable_declareMiddlewareFlag } from "@vercel/flags/next/middleware";
 
-interface Context {}
-
-export const showPromoBannerFlag = unstable_declareMiddlewareFlag<
-  boolean,
-  Context
->({
+export const showPromoBannerFlag = unstable_declareMiddlewareFlag<boolean>({
   key: "showPromoBanner",
-  async decide({ request, context }) {
+  async decide({ request }) {
     return false;
   },
 });
