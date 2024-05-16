@@ -3,6 +3,7 @@ import { Package2Icon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import VercelShipLogo from "@/public/vercel-ship-logo.svg";
 
 export default function Header() {
   return (
@@ -23,7 +24,7 @@ export default function Header() {
             href="https://github.com/ah100101/vercel-ship-experimentation-workshop"
           >
             <GitHubLogoIcon className="h-5 w-5" />
-            <span>GitHub</span>
+            <span className="hidden sm:block">GitHub</span>
           </Link>
         </Button>
         <Button asChild className="pl-1">
@@ -39,9 +40,16 @@ export default function Header() {
               src="/logo.svg"
               alt="Deploy with Vercel"
             />
-            <span>Deploy</span>
+            Deploy
           </Link>
         </Button>
+        <Link target="_blank" href="https://vercel.com/ship">
+          <Image
+            className="h-10 p-2 w-fit bg-black rounded-md"
+            src={VercelShipLogo}
+            alt="Vercel Ship Logo"
+          />
+        </Link>
       </nav>
     </header>
   );
