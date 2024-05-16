@@ -33,8 +33,6 @@ export async function addToCart(productId: string) {
     "cart",
     JSON.stringify([...cartItems.filter((i) => i !== productId), productId])
   );
-
-  context.trackEvent("add_to_cart");
 }
 
 export async function removeFromCart(productId: string) {
