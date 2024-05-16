@@ -17,16 +17,6 @@ export default function Header() {
         <span className="">Acme Store</span>
       </Link>
       <nav className="flex items-center gap-4">
-        <Button variant="secondary" asChild>
-          <Link
-            target="_blank"
-            className="space-x-2"
-            href="https://github.com/ah100101/vercel-ship-experimentation-workshop"
-          >
-            <GitHubLogoIcon className="h-5 w-5" />
-            <span className="hidden sm:block">GitHub</span>
-          </Link>
-        </Button>
         <Button asChild className="pl-1">
           <Link
             target="_blank"
@@ -43,9 +33,19 @@ export default function Header() {
             Deploy
           </Link>
         </Button>
+        <Button variant="secondary" asChild>
+          <Link
+            target="_blank"
+            className="space-x-2"
+            href="https://github.com/ah100101/vercel-ship-experimentation-workshop"
+          >
+            <GitHubLogoIcon className="h-5 w-5" />
+            <span className="hidden sm:block">GitHub</span>
+          </Link>
+        </Button>
         <Link target="_blank" href="https://vercel.com/ship">
           <Image
-            className="h-10 p-2 w-fit bg-black rounded-md"
+            className="h-7 w-fit rounded-md"
             src={VercelShipLogo}
             alt="Vercel Ship Logo"
           />
