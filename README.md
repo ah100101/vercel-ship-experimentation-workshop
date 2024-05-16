@@ -21,7 +21,7 @@ This sample ecommerce website includes many features for developers to get start
 - Product detail page
 - Checkout page
 - Middleware flags with homepage promotion banner example
-- `addToCart` and `placeOrder` Server Actions that track `add_to_cart` and `product_purchase` Optimizely events
+- `placeOrder` Server Action that tracks the `product_purchase` Optimizely event
 
 ### Getting started
 
